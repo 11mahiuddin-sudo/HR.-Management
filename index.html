@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HR Management — Baipayl Office, Ashulia, Dhaka</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            color-scheme: light;
+            --bg-canvas: #f4f7fb;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --accent-sky: #0284c7;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fb;
+            color: #0f172a;
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .kpi-card {
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -12px rgba(15, 23, 42, 0.16);
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printPreviewCard, #printPreviewCard * {
+                visibility: visible;
+            }
+            #printPreviewCard {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 24px;
+                border: none !important;
+                box-shadow: none !important;
+                background: #ffffff !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#f4f7fb] text-[#0f172a] min-h-screen antialiased selection:bg-[#0284c7] selection:text-white">
+    <!-- Top Header & Mode Bar -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-[#0284c7] to-sky-800 text-white font-extrabold text-base flex items-center justify-center shrink-0 shadow-sm">
+                    HR
+                </div>
+                <div class="min-w-0">
+                    <h1 class="text-base sm:text-lg font-extrabold text-[#0f172a] truncate">
+                        HR Management — Baipayl Office, Ashulia, Dhaka
+                    </h1>
+                    <p id="liveHeaderClock" class="text-xs text-slate-600 truncate">
+                        Baipayl Office, Ashulia, Dhaka • Automatic Live Clock Attendance
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+                <span id="modePill" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold bg-sky-50 text-sky-800 border border-sky-200">
+                    <span id="modePillDot" class="w-2 h-2 rounded-full bg-[#0284c7]"></span>
+                    <span id="modePillLabel">Staff Mode (Salary Hidden)</span>
+                </span>
+                <button
+                    type="button"
+                    id="btnOpenUnlock"
+                    class="p-2.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-bold bg-[#0284c7] text-white hover:bg-sky-700 active:scale-[0.99] transition cursor-pointer shadow-sm"
+                >
+                    Unlock Admin
+                </button>
+                <button
+                    type="button"
+                    id="btnLockAdmin"
+                    class="hidden p-2.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-500 text-slate-950 hover:bg-amber-600 active:scale-[0.99] transition cursor-pointer shadow-sm"
+                >
+                    Lock Admin
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-6 space-y-6">
+        <!-- Attractive 3-Box Summary: Check-In Box, Check-Out Box, Total Employee Box -->
+        <section aria-label="Live Attendance and Employee Summary" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Check-In Box -->
+            <div class="kpi-card bg-white border border-emerald-200 rounded-2xl p-5 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -mr-6 -mt-6 pointer-events-none"></div>
+                <div class="relative flex items-start justify-between gap-3">
+                    <div>
+                        <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                            Check-In Box
+                        </span>
+                        <p id="kpiCheckedIn" class="text-4xl font-extrabold text-[#0f172a] mt-3">0</p>
+                        <p id="kpiCheckedInSub" class="text-xs font-medium text-slate-600 mt-1">Today's verified check-ins</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-sm">
+                        IN
+                    </div>
+                </div>
+            </div>
+
+            <!-- Check-Out Box -->
+            <div class="kpi-card bg-white border border-sky-200 rounded-2xl p-5 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -mr-6 -mt-6 pointer-events-none"></div>
+                <div class="relative flex items-start justify-between gap-3">
+                    <div>
+                        <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-[#0284c7] bg-sky-50 px-2.5 py-1 rounded-full border border-sky-200">
+                            Check-Out Box
+                        </span>
+                        <p id="kpiCheckedOut" class="text-4xl font-extrabold text-[#0f172a] mt-3">0</p>
+                        <p id="kpiCheckedOutSub" class="text-xs font-medium text-slate-600 mt-1">Today's completed check-outs</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-[#0284c7] text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-sm">
+                        OUT
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Employee Box -->
+            <div class="kpi-card bg-white border border-indigo-200 rounded-2xl p-5 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-bl-full -mr-6 -mt-6 pointer-events-none"></div>
+                <div class="relative flex items-start justify-between gap-3">
+                    <div>
+                        <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-200">
+                            Total Employee Box
+                        </span>
+                        <p id="kpiTotalEmployees" class="text-4xl font-extrabold text-[#0f172a] mt-3">0</p>
+                        <p id="kpiOnSiteSub" class="text-xs font-medium text-slate-600 mt-1">0 currently on-site at Baipayl</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-slate-900 text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-sm">
+                        EMP
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Staff Attendance Card -->
+        <section aria-label="Staff Attendance Workspace" class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-sm space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-200">
+                <div>
+                    <h2 class="text-lg sm:text-xl font-extrabold text-[#0f172a]">Staff Attendance Check-In &amp; Check-Out</h2>
+                    <p class="text-xs sm:text-sm text-slate-600 mt-0.5">
+                        Date and time are stamped automatically from your device clock on submission.
+                    </p>
+                </div>
+                <span id="officeGeofencePill" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-sky-50 text-sky-800 border border-sky-200">
+                    Baipayl Office, Ashulia, Dhaka • 200m
+                </span>
+            </div>
+
+            <!-- Employee Search, Select, Action Mode & Optional Note -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label for="staffSearchInput" class="block text-xs sm:text-sm font-bold text-slate-800">
+                        Search Employee (Name, ID, Department)
+                    </label>
+                    <input
+                        type="text"
+                        id="staffSearchInput"
+                        placeholder="Search Mahiuddin, Fatema, EMP-101..."
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-[#0f172a] focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
+                    />
+                </div>
+
+                <div class="space-y-1.5">
+                    <label for="staffSelect" class="block text-xs sm:text-sm font-bold text-slate-800">
+                        Select Employee *
+                    </label>
+                    <select
+                        id="staffSelect"
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-[#0f172a] focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
+                    ></select>
+                </div>
+
+                <div class="space-y-1.5">
+                    <span class="block text-xs sm:text-sm font-bold text-slate-800">
+                        Select Check-In or Check-Out Mode
+                    </span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button
+                            type="button"
+                            id="btnActionCheckIn"
+                            aria-pressed="true"
+                            class="p-2.5 sm:px-3.5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.99] transition cursor-pointer shadow-sm"
+                        >
+                            Check-In Mode
+                        </button>
+                        <button
+                            type="button"
+                            id="btnActionCheckOut"
+                            aria-pressed="false"
+                            class="p-2.5 sm:px-3.5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-200 text-slate-800 hover:bg-slate-300 active:scale-[0.99] transition cursor-pointer"
+                        >
+                            Check-Out Mode
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label for="attNoteInput" class="block text-xs sm:text-sm font-bold text-slate-800">
+                        Shift Note (Optional)
+                    </label>
+                    <input
+                        type="text"
+                        id="attNoteInput"
+                        placeholder="e.g. On duty at Baipayl Office"
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-[#0f172a] focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
+                    />
+                </div>
+            </div>
+
+            <!-- Live Selfie / Upload Photo / Demo Photo & GPS Geofence -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="bg-[#f4f7fb] border border-slate-200 rounded-2xl p-4 space-y-3">
+                    <div class="flex items-center justify-between gap-2">
+                        <h3 class="text-sm font-bold text-[#0f172a]">1. Live Selfie, Photo Upload &amp; Demo Photo</h3>
+                        <span id="photoStatusBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-sky-100 text-sky-800">
+                            Demo Ready
+                        </span>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" id="btnStartSelfieCam" class="p-2 sm:px-3 sm:py-1.5 rounded-lg text-xs font-bold bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 cursor-pointer">
+                            Live Selfie
+                        </button>
+                        <button type="button" id="btnSnapshotCam" class="hidden p-2 sm:px-3 sm:py-1.5 rounded-lg text-xs font-bold bg-[#0284c7] text-white hover:bg-sky-700 cursor-pointer">
+                            Capture Photo
+                        </button>
+                        <button type="button" id="btnStopSelfieCam" class="hidden p-2 sm:px-3 sm:py-1.5 rounded-lg text-xs font-bold bg-rose-600 text-white hover:bg-rose-700 cursor-pointer">
+                            Stop Camera
+                        </button>
+                        <label class="p-2 sm:px-3 sm:py-1.5 rounded-lg text-xs font-bold bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 cursor-pointer">
+                            Upload Photo
+                            <input type="file" id="filePhotoInput" accept="image/*" class="hidden" />
+                        </label>
+                        <button type="button" id="btnDemoPhotoCanvas" class="p-2 sm:px-3 sm:py-1.5 rounded-lg text-xs font-bold bg-[#0284c7] text-white hover:bg-sky-700 cursor-pointer">
+                            Demo Photo
+                        </button>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3 pt-1">
+                        <video id="selfieVideoPreview" class="hidden w-28 h-24 rounded-xl object-cover border border-slate-300 bg-slate-200" autoplay playsinline muted></video>
+                        <canvas id="selfieCanvas" width="160" height="128" class="hidden"></canvas>
+                        <img
+                            id="selfiePreviewImg"
+                            src=""
+                            alt="Attendance selfie preview"
+                            class="w-28 h-24 rounded-xl object-cover border border-slate-300 bg-white shrink-0"
+                        />
+                        <p class="text-xs text-slate-600 flex-1 min-w-[150px]">
+                            Use <strong>Live Selfie</strong>, <strong>Upload Photo</strong>, or <strong>Demo Photo</strong> before submitting.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-[#f4f7fb] border border-slate-200 rounded-2xl p-4 space-y-3">
+                    <div class="flex items-center justify-between gap-2">
+                        <h3 class="text-sm font-bold text-[#0f172a]">2. Baipayl Office GPS Geofence</h3>
+                        <span id="gpsStatusBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">
+                            Office Verified
+                        </span>
+                    </div>
+
+                    <p id="gpsDetailLine" class="text-xs text-slate-600">
+                        Target: Baipayl Office, Ashulia, Dhaka (23.9465, 90.2685 • Radius: 200m)
+                    </p>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" id="btnCheckOfficeGps" class="p-2 sm:px-3 sm:py-1.5 rounded-lg text-xs font-bold bg-[#0284c7] text-white hover:bg-sky-700 cursor-pointer">
+                            Verify GPS
+                        </button>
+                        <button type="button" id="btnToggleManualCoords" class="p-2 sm:px-3 sm:py-1.5 rounded-lg text-xs font-bold bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 cursor-pointer">
+                            Manual Coordinates
+                        </button>
+                    </div>
+
+                    <div id="manualCoordsPanel" class="hidden pt-2 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <input type="number" step="any" id="manualLatInput" value="23.9465" aria-label="Manual Latitude" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs text-[#0f172a]" />
+                        <input type="number" step="any" id="manualLngInput" value="90.2685" aria-label="Manual Longitude" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs text-[#0f172a]" />
+                        <input type="number" step="any" id="manualAccInput" value="15" aria-label="Manual Accuracy" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs text-[#0f172a]" />
+                        <button type="button" id="btnApplyManualCoords" class="sm:col-span-3 p-2 rounded-lg text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 cursor-pointer">
+                            Apply Manual Location
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Single Unified Submit Attendance Button -->
+            <div class="p-4 rounded-2xl bg-[#f4f7fb] border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <div class="text-xs sm:text-sm text-slate-700">
+                    Active Mode: <strong id="activeModeText" class="text-emerald-700">Check-In</strong> • Automatic date &amp; time on submit
+                </div>
+                <button
+                    type="button"
+                    id="btn-submit-attendance"
+                    class="w-full sm:w-auto sm:min-w-[270px] min-h-[52px] px-6 py-3 rounded-xl text-sm sm:text-base font-extrabold bg-[#0284c7] text-white hover:bg-sky-700 active:scale-[0.99] shadow-md shadow-sky-600/20 flex items-center justify-center transition cursor-pointer"
+                >
+                    Submit Attendance
+                </button>
+            </div>
+
+            <!-- Live Submission Confirmation Banner -->
+            <div id="submissionBanner" role="status" aria-live="polite" class="p-3.5 sm:p-4 rounded-xl bg-sky-50 border border-sky-200 text-slate-900 text-xs sm:text-sm font-medium flex items-start gap-2.5">
+                <span class="font-extrabold text-[#0284c7] shrink-0">&#10003;</span>
+                <div id="submissionBannerText">
+                    Ready for <strong>Baipayl Office, Ashulia, Dhaka</strong>. Select an employee, choose <strong>Check-In Mode</strong> or <strong>Check-Out Mode</strong>, and click <strong>Submit Attendance</strong>.
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Attendance Log -->
+        <section aria-label="Daily Attendance Log" class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200">
+                <div>
+                    <h2 class="text-lg font-extrabold text-[#0f172a]">Daily Attendance Log</h2>
+                    <p class="text-xs sm:text-sm text-slate-600">Live check-in and check-out records at Baipayl Office</p>
+                </div>
+                <button
+                    type="button"
+                    id="btnToggleAllDatesLog"
+                    class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-800 border border-slate-300 hover:bg-slate-200 cursor-pointer"
+                >
+                    Show All Dates
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[640px]">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500 bg-slate-50">
+                            <th class="py-3 px-3">Photo</th>
+                            <th class="py-3 px-3">Employee</th>
+                            <th class="py-3 px-3">Action</th>
+                            <th class="py-3 px-3">Date &amp; Time</th>
+                            <th class="py-3 px-3">Location / Note</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendanceLogBody" class="divide-y divide-slate-100 text-xs sm:text-sm text-slate-800"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Admin-Only Workspace (Protected by Passkey 017259610) -->
+        <section id="adminPanelSection" aria-label="Admin Management Workspace" class="hidden bg-white border-2 border-[#0284c7]/30 rounded-2xl p-4 sm:p-6 shadow-md space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200">
+                <div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        Admin Unlocked (017259610)
+                    </span>
+                    <h2 class="text-lg sm:text-xl font-extrabold text-[#0f172a] mt-1">Employee Summary, Duty Hours, Overtime, Salary &amp; Print Preview</h2>
+                    <p class="text-xs sm:text-sm text-slate-600">Edit any employee to inspect or print their individual salary &amp; attendance summary slip.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button type="button" id="btnExportCsv" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 cursor-pointer">
+                        Export CSV
+                    </button>
+                    <button type="button" id="btnExportJson" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#0284c7] text-white hover:bg-sky-700 cursor-pointer">
+                        Export JSON Backup
+                    </button>
+                    <label class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 cursor-pointer">
+                        Import JSON Backup
+                        <input type="file" id="fileImportJson" accept="application/json,.json" class="hidden" />
+                    </label>
+                </div>
+            </div>
+
+            <!-- Add / Update Employee Form -->
+            <form id="employeeForm" class="bg-[#f4f7fb] border border-slate-200 rounded-2xl p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3 items-end">
+                <div class="space-y-1">
+                    <label for="empIdInput" class="block text-xs font-bold text-slate-800">Employee ID *</label>
+                    <input type="text" id="empIdInput" required placeholder="EMP-106" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-semibold" />
+                </div>
+                <div class="space-y-1">
+                    <label for="empNameInput" class="block text-xs font-bold text-slate-800">Full Name *</label>
+                    <input type="text" id="empNameInput" required placeholder="Karim Mia" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-semibold" />
+                </div>
+                <div class="space-y-1">
+                    <label for="empDeptInput" class="block text-xs font-bold text-slate-800">Department *</label>
+                    <input type="text" id="empDeptInput" required placeholder="Operations" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-semibold" />
+                </div>
+                <div class="space-y-1">
+                    <label for="empPresentDaysInput" class="block text-xs font-bold text-slate-800">Present Days</label>
+                    <input type="number" min="0" step="1" id="empPresentDaysInput" value="1" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-semibold" />
+                </div>
+                <div class="space-y-1">
+                    <label for="empRateInput" class="block text-xs font-bold text-slate-800">Hourly Rate (BDT)</label>
+                    <input type="number" min="0" step="1" id="empRateInput" value="150" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-semibold" />
+                </div>
+                <div class="space-y-1">
+                    <label for="empHoursInput" class="block text-xs font-bold text-slate-800">Total Duty Hours</label>
+                    <input type="number" min="0" step="0.5" id="empHoursInput" value="8" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-semibold" />
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" id="btnSaveEmployee" class="flex-1 px-3.5 py-2 rounded-xl text-xs font-extrabold bg-emerald-600 text-white hover:bg-emerald-700 cursor-pointer">
+                        Save
+                    </button>
+                    <button type="button" id="btnResetEmpForm" class="px-3 py-2 rounded-xl text-xs font-bold bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 cursor-pointer">
+                        Clear
+                    </button>
+                </div>
+            </form>
+
+            <!-- Live Print Preview Card inside Edit / Summary View -->
+            <div id="printPreviewCard" class="bg-slate-50 border-2 border-dashed border-sky-300 rounded-2xl p-4 sm:p-6 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200">
+                    <div>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-sky-100 text-sky-900">
+                            Print Preview • Individual Employee Summary
+                        </span>
+                        <h3 id="previewEmpTitle" class="text-base sm:text-lg font-extrabold text-[#0f172a] mt-1">
+                            Select or Edit an Employee to Preview Slip
+                        </h3>
+                        <p id="previewEmpMeta" class="text-xs text-slate-600">
+                            Baipayl Office, Ashulia, Dhaka • Standard Shift: 8h/day • Overtime Rate: 1.5x
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2 no-print">
+                        <button type="button" id="btnPrintEmployeeSlip" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-[#0284c7] text-white hover:bg-sky-700 cursor-pointer shadow-sm">
+                            Print Summary
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    <div class="bg-white border border-slate-200 rounded-xl p-3">
+                        <p class="text-[11px] font-bold uppercase text-slate-500">Present Days</p>
+                        <p id="previewPresentDays" class="text-xl font-extrabold text-[#0f172a] mt-1">0 days</p>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-xl p-3">
+                        <p class="text-[11px] font-bold uppercase text-slate-500">Total Duty</p>
+                        <p id="previewDutyHours" class="text-xl font-extrabold text-[#0f172a] mt-1">0.0h</p>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-xl p-3">
+                        <p class="text-[11px] font-bold uppercase text-slate-500">Overtime (1.5x)</p>
+                        <p id="previewOvertimeHours" class="text-xl font-extrabold text-amber-700 mt-1">0.0h</p>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-xl p-3">
+                        <p class="text-[11px] font-bold uppercase text-slate-500">Hourly Rate</p>
+                        <p id="previewHourlyRate" class="text-xl font-extrabold text-[#0f172a] mt-1">৳0</p>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1 bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+                        <p class="text-[11px] font-bold uppercase text-emerald-800">Total Salary</p>
+                        <p id="previewTotalSalary" class="text-xl font-extrabold text-emerald-900 mt-1">৳0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Employee & Payroll Summary Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[860px]">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500 bg-slate-50">
+                            <th class="py-3 px-3">Employee</th>
+                            <th class="py-3 px-3">Present Days</th>
+                            <th class="py-3 px-3">Duty Hours</th>
+                            <th class="py-3 px-3">Overtime (1.5x)</th>
+                            <th class="py-3 px-3">Total Salary</th>
+                            <th class="py-3 px-3">Status</th>
+                            <th class="py-3 px-3 text-right">Edit &amp; Print</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminEmployeeTableBody" class="divide-y divide-slate-100 text-xs sm:text-sm text-slate-800"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Admin Passkey Unlock Modal (Passkey: 017259610) -->
+    <div id="unlockModal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between gap-2">
+                <h3 class="text-lg font-extrabold text-[#0f172a]">Unlock Admin Panel</h3>
+                <button type="button" id="btnCloseUnlockModal" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 cursor-pointer">
+                    &#10005;
+                </button>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600">
+                Enter Admin passkey to access employee duty hours, overtime, salary summary, and print preview.
+            </p>
+            <form id="unlockPasskeyForm" class="space-y-3">
+                <div>
+                    <label for="adminPasskeyInput" class="block text-xs font-bold text-slate-800 mb-1">Admin Passkey</label>
+                    <input
+                        type="password"
+                        id="adminPasskeyInput"
+                        autocomplete="current-password"
+                        placeholder="Enter passkey"
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-[#0f172a] focus:outline-none focus:ring-2 focus:ring-[#0284c7]"
+                    />
+                </div>
+                <p id="passkeyErrorText" class="text-xs font-bold text-rose-600 min-h-[16px]"></p>
+                <div class="flex items-center justify-end gap-2 pt-1">
+                    <button type="button" id="btnCancelUnlock" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-xs font-extrabold bg-[#0284c7] text-white hover:bg-sky-700 cursor-pointer">
+                        Unlock Admin
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            "use strict";
+
+            const MASTER_PASSKEY = "017259610";
+            const STORAGE_KEY = "baipayl_hr_state_v2026_pro";
+            const CHANNEL_NAME = "baipayl_hr_sync_channel_pro";
+            const OFFICE_DEFAULT = {
+                name: "Baipayl Office, Ashulia, Dhaka",
+                lat: 23.9465,
+                lng: 90.2685,
+                radiusMeters: 200
+            };
+
+            let memoryState = null;
+            let cameraStream = null;
+            let activeMode = "check-in";
+            let showAllDates = false;
+            let isAdminUnlocked = false;
+            let failedAttempts = 0;
+            let lockoutUntil = 0;
+            let currentPhotoDataUrl = "";
+            let selectedPreviewEmpId = null;
+            let gpsInfo = {
+                verified: true,
+                lat: OFFICE_DEFAULT.lat,
+                lng: OFFICE_DEFAULT.lng,
+                accuracy: 15,
+                distanceMeters: 0
+            };
+
+            const DEFAULT_EMPLOYEES = [
+                { id: "EMP-101", name: "Mahiuddin", department: "Administration", presentDays: 22, hourlyRate: 220, workedHours: 186, paid: true },
+                { id: "EMP-102", name: "Fatema", department: "Human Resources", presentDays: 21, hourlyRate: 200, workedHours: 168, paid: true },
+                { id: "EMP-103", name: "Rahim Uddin", department: "Operations", presentDays: 20, hourlyRate: 160, workedHours: 174, paid: false },
+                { id: "EMP-104", name: "Nusrat Jahan", department: "Quality Assurance", presentDays: 22, hourlyRate: 175, workedHours: 180, paid: true },
+                { id: "EMP-105", name: "Tanvir Hasan", department: "Logistics", presentDays: 19, hourlyRate: 150, workedHours: 162, paid: false }
+            ];
+
+            function getTodayKey() {
+                const now = new Date();
+                const y = now.getFullYear();
+                const m = String(now.getMonth() + 1).padStart(2, "0");
+                const d = String(now.getDate()).padStart(2, "0");
+                return `${y}-${m}-${d}`;
+            }
+
+            function formatNowTimestamp() {
+                const now = new Date();
+                const dateStr = now.toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                });
+                const timeStr = now.toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: true
+                });
+                return {
+                    dateKey: getTodayKey(),
+                    display: `${dateStr} • ${timeStr}`
+                };
+            }
+
+            function generateDemoPhotoDataUrl(labelText) {
+                try {
+                    const canvas = document.getElementById("selfieCanvas");
+                    if (!canvas) return "";
+                    const ctx = canvas.getContext("2d");
+                    if (!ctx) return "";
+                    const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                    grad.addColorStop(0, "#0284c7");
+                    grad.addColorStop(1, "#0f172a");
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.fillStyle = "#e0f2fe";
+                    ctx.beginPath();
+                    ctx.arc(80, 44, 20, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.ellipse(80, 86, 32, 20, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "bold 11px Inter, sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(labelText || "BAIPAYL DEMO", 80, 118);
+                    return canvas.toDataURL("image/png");
+                } catch (_) {
+                    return "";
+                }
+            }
+
+            function createInitialState() {
+                const stamp = formatNowTimestamp();
+                return {
+                    employees: DEFAULT_EMPLOYEES.map((e) => ({ ...e })),
+                    logs: [
+                        {
+                            id: "LOG-INIT-1",
+                            empId: "EMP-101",
+                            empName: "Mahiuddin",
+                            department: "Administration",
+                            action: "check-in",
+                            dateKey: stamp.dateKey,
+                            timestampText: `${stamp.dateKey} • 09:00:00 AM`,
+                            note: "Baipayl Office Shift",
+                            photo: generateDemoPhotoDataUrl("EMP-101"),
+                            locationLabel: "Baipayl Office (0m)"
+                        },
+                        {
+                            id: "LOG-INIT-2",
+                            empId: "EMP-102",
+                            empName: "Fatema",
+                            department: "Human Resources",
+                            action: "check-in",
+                            dateKey: stamp.dateKey,
+                            timestampText: `${stamp.dateKey} • 09:05:00 AM`,
+                            note: "HR Desk Active",
+                            photo: generateDemoPhotoDataUrl("EMP-102"),
+                            locationLabel: "Baipayl Office (0m)"
+                        }
+                    ]
+                };
+            }
+
+            function readHashState() {
+                try {
+                    const hash = window.location.hash || "";
+                    const idx = hash.indexOf("#state=");
+                    if (idx === -1) return null;
+                    const encoded = hash.slice(idx + 7);
+                    if (!encoded || encoded.length > 500000) return null;
+                    const jsonStr = decodeURIComponent(escape(atob(encoded)));
+                    return JSON.parse(jsonStr);
+                } catch (_) {
+                    return null;
+                }
+            }
+
+            function writeHashState(stateObj) {
+                try {
+                    const slimState = {
+                        employees: stateObj.employees,
+                        logs: stateObj.logs.slice(0, 60).map((item) => ({
+                            ...item,
+                            photo: item.photo && item.photo.length > 35000 ? "" : item.photo
+                        }))
+                    };
+                    const jsonStr = JSON.stringify(slimState);
+                    const b64 = btoa(unescape(encodeURIComponent(jsonStr)));
+                    if (b64.length < 450000) {
+                        window.history.replaceState(null, "", "#state=" + b64);
+                    }
+                } catch (_) {}
+            }
+
+            function loadState() {
+                const candidates = [];
+                if (memoryState) candidates.push(memoryState);
+                try {
+                    const rawLocal = localStorage.getItem(STORAGE_KEY);
+                    if (rawLocal) candidates.push(JSON.parse(rawLocal));
+                } catch (_) {}
+                try {
+                    const rawSession = sessionStorage.getItem(STORAGE_KEY);
+                    if (rawSession) candidates.push(JSON.parse(rawSession));
+                } catch (_) {}
+                try {
+                    if (window.name && window.name.startsWith("BAIPAYL_HR_PRO:")) {
+                        candidates.push(JSON.parse(window.name.slice("BAIPAYL_HR_PRO:".length)));
+                    }
+                } catch (_) {}
+                const hashParsed = readHashState();
+                if (hashParsed) candidates.push(hashParsed);
+
+                for (const c of candidates) {
+                    if (c && Array.isArray(c.employees) && Array.isArray(c.logs)) {
+                        return { employees: c.employees, logs: c.logs };
+                    }
+                }
+                return createInitialState();
+            }
+
+            let channel = null;
+            try {
+                if ("BroadcastChannel" in window) {
+                    channel = new BroadcastChannel(CHANNEL_NAME);
+                    channel.onmessage = function (ev) {
+                        if (ev && ev.data && ev.data.type === "STATE_UPDATED" && ev.data.payload) {
+                            memoryState = ev.data.payload;
+                            renderAll();
+                        }
+                    };
+                }
+            } catch (_) {}
+
+            function saveState(nextState) {
+                memoryState = {
+                    employees: Array.isArray(nextState.employees) ? nextState.employees : [],
+                    logs: Array.isArray(nextState.logs) ? nextState.logs : []
+                };
+                const serialized = JSON.stringify(memoryState);
+                try { localStorage.setItem(STORAGE_KEY, serialized); } catch (_) {}
+                try { sessionStorage.setItem(STORAGE_KEY, serialized); } catch (_) {}
+                try { window.name = "BAIPAYL_HR_PRO:" + serialized; } catch (_) {}
+                writeHashState(memoryState);
+                try {
+                    if (channel) channel.postMessage({ type: "STATE_UPDATED", payload: memoryState });
+                } catch (_) {}
+            }
+
+            function getEffectivePresentDays(emp) {
+                const loggedDays = new Set(
+                    (memoryState.logs || [])
+                        .filter((l) => l.empId === emp.id && l.dateKey)
+                        .map((l) => l.dateKey)
+                );
+                const manualDays = Number(emp.presentDays) || 0;
+                return Math.max(manualDays, loggedDays.size);
+            }
+
+            function computePayrollMetrics(emp) {
+                const presentDays = getEffectivePresentDays(emp);
+                const totalHours = Math.max(0, Number(emp.workedHours) || 0);
+                const rate = Math.max(0, Number(emp.hourlyRate) || 0);
+                const standardCap = presentDays > 0 ? presentDays * 8 : 8;
+                const regularHours = Math.min(totalHours, standardCap);
+                const overtimeHours = Math.max(0, totalHours - standardCap);
+                const totalSalary = Math.round(regularHours * rate + overtimeHours * rate * 1.5);
+                return {
+                    presentDays,
+                    totalHours,
+                    regularHours,
+                    overtimeHours,
+                    rate,
+                    totalSalary
+                };
+            }
+
+            function haversineMeters(lat1, lon1, lat2, lon2) {
+                const R = 6371000;
+                const toRad = (deg) => (deg * Math.PI) / 180;
+                const dLat = toRad(lat2 - lat1);
+                const dLon = toRad(lon2 - lon1);
+                const a =
+                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            }
+
+            function updateClock() {
+                const el = document.getElementById("liveHeaderClock");
+                if (!el) return;
+                const now = new Date();
+                el.textContent = `Baipayl Office, Ashulia, Dhaka • ${now.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short", year: "numeric" })} — ${now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true })}`;
+            }
+
+            function renderEmployeeSelect() {
+                const selectEl = document.getElementById("staffSelect");
+                const searchEl = document.getElementById("staffSearchInput");
+                if (!selectEl) return;
+
+                const query = (searchEl ? searchEl.value : "").trim().toLowerCase();
+                const previousVal = selectEl.value;
+                const filtered = (memoryState.employees || []).filter((emp) => {
+                    if (!query) return true;
+                    return (
+                        String(emp.id).toLowerCase().includes(query) ||
+                        String(emp.name).toLowerCase().includes(query) ||
+                        String(emp.department).toLowerCase().includes(query)
+                    );
+                });
+
+                const listToRender = filtered.length > 0 ? filtered : (memoryState.employees || []);
+                selectEl.innerHTML = "";
+                listToRender.forEach((emp) => {
+                    const opt = document.createElement("option");
+                    opt.value = emp.id;
+                    opt.textContent = `${emp.id} — ${emp.name} (${emp.department})`;
+                    selectEl.appendChild(opt);
+                });
+
+                if (listToRender.some((e) => e.id === previousVal)) {
+                    selectEl.value = previousVal;
+                }
+            }
+
+            function renderBoxes() {
+                const today = getTodayKey();
+                const todayLogs = (memoryState.logs || []).filter((l) => l.dateKey === today);
+
+                const latestByEmp = new Map();
+                todayLogs.forEach((entry) => {
+                    if (!latestByEmp.has(entry.empId)) {
+                        latestByEmp.set(entry.empId, entry.action);
+                    }
+                });
+
+                let checkedInCount = 0;
+                let checkedOutCount = 0;
+                let onSiteCount = 0;
+
+                latestByEmp.forEach((action) => {
+                    if (action === "check-in") {
+                        checkedInCount += 1;
+                        onSiteCount += 1;
+                    } else if (action === "check-out") {
+                        checkedOutCount += 1;
+                    }
+                });
+
+                const totalEmployees = (memoryState.employees || []).length;
+
+                const elIn = document.getElementById("kpiCheckedIn");
+                const elOut = document.getElementById("kpiCheckedOut");
+                const elTotal = document.getElementById("kpiTotalEmployees");
+                const elOnSiteSub = document.getElementById("kpiOnSiteSub");
+
+                if (elIn) elIn.textContent = String(checkedInCount);
+                if (elOut) elOut.textContent = String(checkedOutCount);
+                if (elTotal) elTotal.textContent = String(totalEmployees);
+                if (elOnSiteSub) elOnSiteSub.textContent = `${onSiteCount} currently on-site at Baipayl`;
+            }
+
+            function renderAttendanceLog() {
+                const tbody = document.getElementById("attendanceLogBody");
+                const btnToggle = document.getElementById("btnToggleAllDatesLog");
+                if (!tbody) return;
+
+                const today = getTodayKey();
+                const rows = showAllDates
+                    ? (memoryState.logs || [])
+                    : (memoryState.logs || []).filter((l) => l.dateKey === today);
+
+                if (btnToggle) {
+                    btnToggle.textContent = showAllDates ? "Showing All Dates (Click for Today)" : "Show All Dates";
+                }
+
+                if (rows.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="py-6 px-4 text-center text-slate-500">No attendance records found for this filter.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = rows.map((entry) => {
+                    const isIn = entry.action === "check-in";
+                    const badgeClass = isIn
+                        ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                        : "bg-sky-50 text-sky-800 border-sky-200";
+                    const badgeLabel = isIn ? "Checked In" : "Checked Out";
+                    const imgHtml = entry.photo
+                        ? `<img src="${entry.photo}" alt="${escapeAttr(entry.empName)}" class="w-10 h-10 rounded-lg object-cover border border-slate-200" />`
+                        : `<div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200">${escapeHtml((entry.empName || "HR").slice(0, 2).toUpperCase())}</div>`;
+
+                    return `
+                        <tr class="hover:bg-slate-50/80">
+                            <td class="py-2.5 px-3">${imgHtml}</td>
+                            <td class="py-2.5 px-3">
+                                <div class="font-bold text-[#0f172a]">${escapeHtml(entry.empName)}</div>
+                                <div class="text-xs text-slate-500">${escapeHtml(entry.empId)} • ${escapeHtml(entry.department || "Staff")}</div>
+                            </td>
+                            <td class="py-2.5 px-3">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border ${badgeClass}">${badgeLabel}</span>
+                            </td>
+                            <td class="py-2.5 px-3 font-medium text-slate-700">${escapeHtml(entry.timestampText)}</td>
+                            <td class="py-2.5 px-3 text-xs text-slate-600">
+                                <div class="font-semibold text-slate-700">${escapeHtml(entry.locationLabel || "Baipayl Office")}</div>
+                                <div>${escapeHtml(entry.note || "—")}</div>
+                            </td>
+                        </tr>
+                    `;
+                }).join("");
+            }
+
+            function updatePrintPreview(emp) {
+                const titleEl = document.getElementById("previewEmpTitle");
+                const metaEl = document.getElementById("previewEmpMeta");
+                const daysEl = document.getElementById("previewPresentDays");
+                const dutyEl = document.getElementById("previewDutyHours");
+                const otEl = document.getElementById("previewOvertimeHours");
+                const rateEl = document.getElementById("previewHourlyRate");
+                const salaryEl = document.getElementById("previewTotalSalary");
+
+                const targetEmp = emp || (memoryState.employees || [])[0];
+                if (!targetEmp) return;
+
+                selectedPreviewEmpId = targetEmp.id;
+                const m = computePayrollMetrics(targetEmp);
+
+                if (titleEl) titleEl.textContent = `${targetEmp.name} (${targetEmp.id}) — ${targetEmp.department}`;
+                if (metaEl) metaEl.textContent = `Baipayl Office, Ashulia, Dhaka • Regular Cap: ${m.presentDays * 8}h (${m.regularHours.toFixed(1)}h reg) • Status: ${targetEmp.paid ? "Paid" : "Unpaid"}`;
+                if (daysEl) daysEl.textContent = `${m.presentDays} days`;
+                if (dutyEl) dutyEl.textContent = `${m.totalHours.toFixed(1)}h`;
+                if (otEl) otEl.textContent = `${m.overtimeHours.toFixed(1)}h`;
+                if (rateEl) rateEl.textContent = `৳${m.rate.toLocaleString()}`;
+                if (salaryEl) salaryEl.textContent = `৳${m.totalSalary.toLocaleString()}`;
+            }
+
+            function renderAdminSection() {
+                const adminSection = document.getElementById("adminPanelSection");
+                const btnOpenUnlock = document.getElementById("btnOpenUnlock");
+                const btnLockAdmin = document.getElementById("btnLockAdmin");
+                const pill = document.getElementById("modePill");
+                const pillDot = document.getElementById("modePillDot");
+                const pillLabel = document.getElementById("modePillLabel");
+                const tbody = document.getElementById("adminEmployeeTableBody");
+
+                if (isAdminUnlocked) {
+                    adminSection?.classList.remove("hidden");
+                    btnOpenUnlock?.classList.add("hidden");
+                    btnLockAdmin?.classList.remove("hidden");
+                    if (pill) pill.className = "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200";
+                    if (pillDot) pillDot.className = "w-2 h-2 rounded-full bg-emerald-600";
+                    if (pillLabel) pillLabel.textContent = "Admin Mode Unlocked";
+                } else {
+                    adminSection?.classList.add("hidden");
+                    btnOpenUnlock?.classList.remove("hidden");
+                    btnLockAdmin?.classList.add("hidden");
+                    if (pill) pill.className = "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold bg-sky-50 text-sky-800 border border-sky-200";
+                    if (pillDot) pillDot.className = "w-2 h-2 rounded-full bg-[#0284c7]";
+                    if (pillLabel) pillLabel.textContent = "Staff Mode (Salary Hidden)";
+                    return;
+                }
+
+                const employees = memoryState.employees || [];
+                const activeEmp = employees.find((e) => e.id === selectedPreviewEmpId) || employees[0] || null;
+                updatePrintPreview(activeEmp);
+
+                if (!tbody) return;
+                tbody.innerHTML = employees.map((emp) => {
+                    const m = computePayrollMetrics(emp);
+                    return `
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-3">
+                                <div class="font-bold text-[#0f172a]">${escapeHtml(emp.name)}</div>
+                                <div class="text-xs text-slate-500">${escapeHtml(emp.id)} • ${escapeHtml(emp.department)}</div>
+                            </td>
+                            <td class="py-3 px-3 font-bold">${m.presentDays} days</td>
+                            <td class="py-3 px-3 font-semibold">${m.totalHours.toFixed(1)}h</td>
+                            <td class="py-3 px-3 font-bold text-amber-700">${m.overtimeHours.toFixed(1)}h</td>
+                            <td class="py-3 px-3 font-extrabold text-emerald-800">৳${m.totalSalary.toLocaleString()}</td>
+                            <td class="py-3 px-3">
+                                <button
+                                    type="button"
+                                    data-toggle-paid="${escapeAttr(emp.id)}"
+                                    class="px-2.5 py-1 rounded-full text-xs font-bold cursor-pointer ${emp.paid ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}"
+                                >
+                                    ${emp.paid ? "Paid" : "Unpaid"}
+                                </button>
+                            </td>
+                            <td class="py-3 px-3 text-right space-x-1.5 whitespace-nowrap">
+                                <button type="button" data-edit-emp="${escapeAttr(emp.id)}" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-50 text-[#0284c7] hover:bg-sky-100 cursor-pointer">
+                                    Edit &amp; Preview
+                                </button>
+                                <button type="button" data-del-emp="${escapeAttr(emp.id)}" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 cursor-pointer">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join("");
+            }
+
+            function renderAll() {
+                renderEmployeeSelect();
+                renderBoxes();
+                renderAttendanceLog();
+                renderAdminSection();
+            }
+
+            function setMode(mode) {
+                activeMode = mode === "check-out" ? "check-out" : "check-in";
+                const btnIn = document.getElementById("btnActionCheckIn");
+                const btnOut = document.getElementById("btnActionCheckOut");
+                const modeText = document.getElementById("activeModeText");
+                const submitBtn = document.getElementById("btn-submit-attendance");
+
+                if (activeMode === "check-in") {
+                    btnIn?.setAttribute("aria-pressed", "true");
+                    btnOut?.setAttribute("aria-pressed", "false");
+                    if (btnIn) btnIn.className = "p-2.5 sm:px-3.5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.99] transition cursor-pointer shadow-sm";
+                    if (btnOut) btnOut.className = "p-2.5 sm:px-3.5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-200 text-slate-800 hover:bg-slate-300 active:scale-[0.99] transition cursor-pointer";
+                    if (modeText) {
+                        modeText.textContent = "Check-In";
+                        modeText.className = "text-emerald-700";
+                    }
+                    if (submitBtn) submitBtn.textContent = "Submit Attendance (Check-In)";
+                } else {
+                    btnIn?.setAttribute("aria-pressed", "false");
+                    btnOut?.setAttribute("aria-pressed", "true");
+                    if (btnOut) btnOut.className = "p-2.5 sm:px-3.5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-900 text-white hover:bg-slate-800 active:scale-[0.99] transition cursor-pointer shadow-sm";
+                    if (btnIn) btnIn.className = "p-2.5 sm:px-3.5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-200 text-slate-800 hover:bg-slate-300 active:scale-[0.99] transition cursor-pointer";
+                    if (modeText) {
+                        modeText.textContent = "Check-Out";
+                        modeText.className = "text-[#0284c7]";
+                    }
+                    if (submitBtn) submitBtn.textContent = "Submit Attendance (Check-Out)";
+                }
+            }
+
+            function setPhotoPreview(dataUrl, badgeLabel) {
+                currentPhotoDataUrl = dataUrl || "";
+                const img = document.getElementById("selfiePreviewImg");
+                const badge = document.getElementById("photoStatusBadge");
+                if (img && currentPhotoDataUrl) img.src = currentPhotoDataUrl;
+                if (badge && badgeLabel) badge.textContent = badgeLabel;
+            }
+
+            function stopCamera() {
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach((t) => t.stop());
+                    cameraStream = null;
+                }
+                document.getElementById("selfieVideoPreview")?.classList.add("hidden");
+                document.getElementById("selfiePreviewImg")?.classList.remove("hidden");
+                document.getElementById("btnSnapshotCam")?.classList.add("hidden");
+                document.getElementById("btnStopSelfieCam")?.classList.add("hidden");
+            }
+
+            async function startCamera() {
+                const video = document.getElementById("selfieVideoPreview");
+                const bannerText = document.getElementById("submissionBannerText");
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    setPhotoPreview(generateDemoPhotoDataUrl("SELFIE DEMO"), "Demo Fallback");
+                    if (bannerText) bannerText.innerHTML = "Camera not supported here—generated a <strong>Demo Photo</strong> automatically.";
+                    return;
+                }
+                try {
+                    cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+                    if (video) {
+                        video.srcObject = cameraStream;
+                        video.classList.remove("hidden");
+                    }
+                    document.getElementById("selfiePreviewImg")?.classList.add("hidden");
+                    document.getElementById("btnSnapshotCam")?.classList.remove("hidden");
+                    document.getElementById("btnStopSelfieCam")?.classList.remove("hidden");
+                    setPhotoPreview(currentPhotoDataUrl, "Camera Live");
+                } catch (_) {
+                    setPhotoPreview(generateDemoPhotoDataUrl("SELFIE DEMO"), "Demo Ready");
+                    if (bannerText) bannerText.innerHTML = "Camera unavailable or blocked—<strong>Demo Photo</strong> is ready.";
+                }
+            }
+
+            function captureSnapshot() {
+                const video = document.getElementById("selfieVideoPreview");
+                const canvas = document.getElementById("selfieCanvas");
+                if (video && canvas && cameraStream) {
+                    const ctx = canvas.getContext("2d");
+                    if (ctx) {
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        setPhotoPreview(canvas.toDataURL("image/jpeg", 0.8), "Live Selfie Captured");
+                    }
+                }
+                stopCamera();
+            }
+
+            function handleSubmitAttendance() {
+                const selectEl = document.getElementById("staffSelect");
+                const noteEl = document.getElementById("attNoteInput");
+                const bannerText = document.getElementById("submissionBannerText");
+
+                const selectedId = selectEl ? selectEl.value : "";
+                const emp = (memoryState.employees || []).find((e) => e.id === selectedId) || (memoryState.employees || [])[0];
+                if (!emp) return;
+
+                const stamp = formatNowTimestamp();
+                const noteVal = noteEl ? noteEl.value.trim() : "";
+                const photoToSave = currentPhotoDataUrl || generateDemoPhotoDataUrl(emp.id);
+
+                const newEntry = {
+                    id: "LOG-" + Date.now(),
+                    empId: emp.id,
+                    empName: emp.name,
+                    department: emp.department,
+                    action: activeMode,
+                    dateKey: stamp.dateKey,
+                    timestampText: stamp.display,
+                    note: noteVal || (activeMode === "check-in" ? "Checked in at Baipayl Office" : "Checked out from Baipayl Office"),
+                    photo: photoToSave,
+                    locationLabel: `${OFFICE_DEFAULT.name} (${Math.round(gpsInfo.distanceMeters)}m)`
+                };
+
+                memoryState.logs = [newEntry, ...(memoryState.logs || [])];
+                saveState(memoryState);
+                renderAll();
+
+                if (noteEl) noteEl.value = "";
+                if (bannerText) {
+                    const actionLabel = activeMode === "check-in" ? "Check-In" : "Check-Out";
+                    bannerText.innerHTML = `<strong>${actionLabel}</strong> submitted for <strong>${escapeHtml(emp.name)} (${escapeHtml(emp.id)})</strong> at <strong>${escapeHtml(stamp.display)}</strong>.`;
+                }
+            }
+
+            function escapeHtml(str) {
+                return String(str || "")
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;");
+            }
+
+            function escapeAttr(str) {
+                return String(str || "").replace(/"/g, "&quot;");
+            }
+
+            function bindEvents() {
+                document.getElementById("btnActionCheckIn")?.addEventListener("click", () => setMode("check-in"));
+                document.getElementById("btnActionCheckOut")?.addEventListener("click", () => setMode("check-out"));
+                document.getElementById("btn-submit-attendance")?.addEventListener("click", handleSubmitAttendance);
+
+                document.getElementById("staffSearchInput")?.addEventListener("input", renderEmployeeSelect);
+                document.getElementById("btnToggleAllDatesLog")?.addEventListener("click", () => {
+                    showAllDates = !showAllDates;
+                    renderAttendanceLog();
+                });
+
+                document.getElementById("btnStartSelfieCam")?.addEventListener("click", startCamera);
+                document.getElementById("btnSnapshotCam")?.addEventListener("click", captureSnapshot);
+                document.getElementById("btnStopSelfieCam")?.addEventListener("click", stopCamera);
+
+                document.getElementById("btnDemoPhotoCanvas")?.addEventListener("click", () => {
+                    stopCamera();
+                    const empId = document.getElementById("staffSelect")?.value || "BAIPAYL";
+                    setPhotoPreview(generateDemoPhotoDataUrl(empId), "Demo Photo Set");
+                });
+
+                document.getElementById("filePhotoInput")?.addEventListener("change", (ev) => {
+                    const file = ev.target?.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = function (loadEv) {
+                        stopCamera();
+                        if (typeof loadEv.target?.result === "string") {
+                            setPhotoPreview(loadEv.target.result, "Uploaded Photo");
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                document.getElementById("btnToggleManualCoords")?.addEventListener("click", () => {
+                    document.getElementById("manualCoordsPanel")?.classList.toggle("hidden");
+                });
+
+                document.getElementById("btnApplyManualCoords")?.addEventListener("click", () => {
+                    const lat = parseFloat(document.getElementById("manualLatInput")?.value || String(OFFICE_DEFAULT.lat));
+                    const lng = parseFloat(document.getElementById("manualLngInput")?.value || String(OFFICE_DEFAULT.lng));
+                    const acc = parseFloat(document.getElementById("manualAccInput")?.value || "15");
+                    const dist = haversineMeters(lat, lng, OFFICE_DEFAULT.lat, OFFICE_DEFAULT.lng);
+                    gpsInfo = { verified: true, lat, lng, accuracy: Number.isFinite(acc) ? acc : 15, distanceMeters: dist };
+                    const badge = document.getElementById("gpsStatusBadge");
+                    const detail = document.getElementById("gpsDetailLine");
+                    if (badge) badge.textContent = dist <= OFFICE_DEFAULT.radiusMeters ? "In Geofence" : "Outside Geofence";
+                    if (detail) detail.textContent = `Manual (${lat.toFixed(4)}, ${lng.toFixed(4)}) • Distance: ${Math.round(dist)}m`;
+                });
+
+                document.getElementById("btnCheckOfficeGps")?.addEventListener("click", () => {
+                    const badge = document.getElementById("gpsStatusBadge");
+                    const detail = document.getElementById("gpsDetailLine");
+                    if (!navigator.geolocation) {
+                        gpsInfo = { verified: true, lat: OFFICE_DEFAULT.lat, lng: OFFICE_DEFAULT.lng, accuracy: 15, distanceMeters: 0 };
+                        if (badge) badge.textContent = "Office Verified";
+                        return;
+                    }
+                    if (badge) badge.textContent = "Checking...";
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                            const dist = haversineMeters(pos.coords.latitude, pos.coords.longitude, OFFICE_DEFAULT.lat, OFFICE_DEFAULT.lng);
+                            gpsInfo = { verified: true, lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: Math.round(pos.coords.accuracy || 15), distanceMeters: dist };
+                            if (badge) badge.textContent = dist <= OFFICE_DEFAULT.radiusMeters ? "Verified In-Range" : `${Math.round(dist)}m Away`;
+                            if (detail) detail.textContent = `GPS (${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}) • ${Math.round(dist)}m from Baipayl Office`;
+                        },
+                        () => {
+                            gpsInfo = { verified: true, lat: OFFICE_DEFAULT.lat, lng: OFFICE_DEFAULT.lng, accuracy: 20, distanceMeters: 0 };
+                            if (badge) badge.textContent = "Office Verified";
+                        },
+                        { enableHighAccuracy: true, timeout: 6000 }
+                    );
+                });
+
+                // Unlock & Lock Admin
+                const modal = document.getElementById("unlockModal");
+                const passkeyInput = document.getElementById("adminPasskeyInput");
+                const passkeyErr = document.getElementById("passkeyErrorText");
+
+                document.getElementById("btnOpenUnlock")?.addEventListener("click", () => {
+                    if (passkeyErr) passkeyErr.textContent = "";
+                    if (passkeyInput) passkeyInput.value = "";
+                    modal?.classList.remove("hidden");
+                    setTimeout(() => passkeyInput?.focus(), 40);
+                });
+
+                document.getElementById("btnCloseUnlockModal")?.addEventListener("click", () => modal?.classList.add("hidden"));
+                document.getElementById("btnCancelUnlock")?.addEventListener("click", () => modal?.classList.add("hidden"));
+
+                document.getElementById("unlockPasskeyForm")?.addEventListener("submit", (ev) => {
+                    ev.preventDefault();
+                    const nowMs = Date.now();
+                    if (nowMs < lockoutUntil) {
+                        if (passkeyErr) passkeyErr.textContent = `Locked for ${Math.ceil((lockoutUntil - nowMs) / 1000)}s.`;
+                        return;
+                    }
+                    const entered = (passkeyInput?.value || "").trim();
+                    if (entered === MASTER_PASSKEY) {
+                        failedAttempts = 0;
+                        lockoutUntil = 0;
+                        isAdminUnlocked = true;
+                        modal?.classList.add("hidden");
+                        renderAdminSection();
+                    } else {
+                        failedAttempts += 1;
+                        if (failedAttempts >= 5) {
+                            lockoutUntil = Date.now() + 60000;
+                            if (passkeyErr) passkeyErr.textContent = "5 failed attempts. Locked for 60 seconds.";
+                        } else if (passkeyErr) {
+                            passkeyErr.textContent = `Invalid passkey (${failedAttempts}/5 attempts used).`;
+                        }
+                    }
+                });
+
+                document.getElementById("btnLockAdmin")?.addEventListener("click", () => {
+                    isAdminUnlocked = false;
+                    renderAdminSection();
+                });
+
+                // Save Employee
+                document.getElementById("employeeForm")?.addEventListener("submit", (ev) => {
+                    ev.preventDefault();
+                    if (!isAdminUnlocked) return;
+
+                    const idVal = (document.getElementById("empIdInput")?.value || "").trim();
+                    const nameVal = (document.getElementById("empNameInput")?.value || "").trim();
+                    const deptVal = (document.getElementById("empDeptInput")?.value || "").trim();
+                    const daysVal = Math.max(0, Math.round(Number(document.getElementById("empPresentDaysInput")?.value || 0)));
+                    const rateVal = Math.max(0, Number(document.getElementById("empRateInput")?.value || 0));
+                    const hoursVal = Math.max(0, Number(document.getElementById("empHoursInput")?.value || 0));
+
+                    if (!idVal || !nameVal || !deptVal) return;
+
+                    const idx = (memoryState.employees || []).findIndex((e) => e.id.toLowerCase() === idVal.toLowerCase());
+                    if (idx >= 0) {
+                        memoryState.employees[idx] = {
+                            ...memoryState.employees[idx],
+                            id: idVal,
+                            name: nameVal,
+                            department: deptVal,
+                            presentDays: daysVal,
+                            hourlyRate: rateVal,
+                            workedHours: hoursVal
+                        };
+                    } else {
+                        memoryState.employees.push({
+                            id: idVal,
+                            name: nameVal,
+                            department: deptVal,
+                            presentDays: daysVal,
+                            hourlyRate: rateVal,
+                            workedHours: hoursVal,
+                            paid: false
+                        });
+                    }
+
+                    selectedPreviewEmpId = idVal;
+                    saveState(memoryState);
+                    renderAll();
+                });
+
+                document.getElementById("btnResetEmpForm")?.addEventListener("click", () => {
+                    document.getElementById("employeeForm")?.reset();
+                    document.getElementById("empPresentDaysInput").value = "1";
+                    document.getElementById("empRateInput").value = "150";
+                    document.getElementById("empHoursInput").value = "8";
+                });
+
+                document.getElementById("btnPrintEmployeeSlip")?.addEventListener("click", () => {
+                    if (!isAdminUnlocked) return;
+                    window.print();
+                });
+
+                document.getElementById("adminEmployeeTableBody")?.addEventListener("click", (ev) => {
+                    if (!isAdminUnlocked) return;
+                    const target = ev.target;
+                    if (!(target instanceof HTMLElement)) return;
+
+                    const paidId = target.getAttribute("data-toggle-paid");
+                    if (paidId) {
+                        memoryState.employees = memoryState.employees.map((e) =>
+                            e.id === paidId ? { ...e, paid: !e.paid } : e
+                        );
+                        saveState(memoryState);
+                        renderAdminSection();
+                        return;
+                    }
+
+                    const editId = target.getAttribute("data-edit-emp");
+                    if (editId) {
+                        const emp = memoryState.employees.find((e) => e.id === editId);
+                        if (emp) {
+                            selectedPreviewEmpId = emp.id;
+                            document.getElementById("empIdInput").value = emp.id;
+                            document.getElementById("empNameInput").value = emp.name;
+                            document.getElementById("empDeptInput").value = emp.department;
+                            document.getElementById("empPresentDaysInput").value = String(getEffectivePresentDays(emp));
+                            document.getElementById("empRateInput").value = String(emp.hourlyRate);
+                            document.getElementById("empHoursInput").value = String(emp.workedHours);
+                            updatePrintPreview(emp);
+                            document.getElementById("printPreviewCard")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                        }
+                        return;
+                    }
+
+                    const delId = target.getAttribute("data-del-emp");
+                    if (delId) {
+                        memoryState.employees = memoryState.employees.filter((e) => e.id !== delId);
+                        if (selectedPreviewEmpId === delId) selectedPreviewEmpId = null;
+                        saveState(memoryState);
+                        renderAll();
+                    }
+                });
+
+                // CSV & JSON Backup / Restore
+                document.getElementById("btnExportCsv")?.addEventListener("click", () => {
+                    if (!isAdminUnlocked) return;
+                    const lines = ["Employee ID,Name,Department,Present Days,Duty Hours,Overtime Hours (1.5x),Hourly Rate (BDT),Total Salary (BDT),Status"];
+                    (memoryState.employees || []).forEach((emp) => {
+                        const m = computePayrollMetrics(emp);
+                        lines.push(`"${emp.id}","${emp.name}","${emp.department}",${m.presentDays},${m.totalHours},${m.overtimeHours},${m.rate},${m.totalSalary},${emp.paid ? "Paid" : "Unpaid"}`);
+                    });
+                    downloadTextFile("baipayl-hr-summary.csv", lines.join("\n"), "text/csv;charset=utf-8;");
+                });
+
+                document.getElementById("btnExportJson")?.addEventListener("click", () => {
+                    if (!isAdminUnlocked) return;
+                    downloadTextFile(`baipayl-hr-backup-${getTodayKey()}.json`, JSON.stringify(memoryState, null, 2), "application/json");
+                });
+
+                document.getElementById("fileImportJson")?.addEventListener("change", (ev) => {
+                    if (!isAdminUnlocked) return;
+                    const file = ev.target?.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = function (loadEv) {
+                        try {
+                            const parsed = JSON.parse(String(loadEv.target?.result || "{}"));
+                            if (Array.isArray(parsed.employees) && Array.isArray(parsed.logs)) {
+                                saveState(parsed);
+                                renderAll();
+                            }
+                        } catch (_) {}
+                    };
+                    reader.readAsText(file);
+                });
+            }
+
+            function downloadTextFile(filename, content, mimeType) {
+                try {
+                    const blob = new Blob([content], { type: mimeType });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    setTimeout(() => URL.revokeObjectURL(url), 1000);
+                } catch (_) {}
+            }
+
+            try {
+                memoryState = loadState();
+                setPhotoPreview(generateDemoPhotoDataUrl("BAIPAYL HR"), "Demo Ready");
+                setMode("check-in");
+                bindEvents();
+                updateClock();
+                renderAll();
+                setInterval(updateClock, 1000);
+            } catch (err) {
+                console.error("HR initialization notice:", err);
+            }
+        })();
+    </script>
+</body>
+</html>
+
